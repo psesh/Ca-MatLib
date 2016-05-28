@@ -1,0 +1,2 @@
+# Macolib
+Matrix computations library
