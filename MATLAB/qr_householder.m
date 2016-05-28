@@ -19,7 +19,7 @@ k = min(m,n);
 Q = eye(m,m);
 for j = k : -1 : 1
     v = [1; A(j+1:m,j)];
-    betav = 2/(1 + norm(A(j+1:m,j), 2)^2);
+    betav = 2/(1 + norm(A(j+1:m,j), 2)^2); % We get the beta's from the stored Householder vectors!
     Q(j:m,j:m) = Q(j:m,j:m) - (betav * (v*v') * Q(j:m,j:m));
 end
 
