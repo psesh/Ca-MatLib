@@ -1,3 +1,8 @@
+% Computation of the Householder vector. For an input x in R^(m x 1), t
+% this function computes v in R^(m x 1) with v(1) = 1 and a constant betav 
+% such that P = eye(m) - betav*v*v' is orthogonal. 
+%
+% Copyright (c) 2016 by Pranay Seshadri
 function [v,betav] = house(x)
 
 m = length(x);
