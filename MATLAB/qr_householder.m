@@ -7,7 +7,7 @@ function [Q,R] = qr_householder(A)
 
 for j = 1 : n
     [v,betav] = house(A(j:m,j));
-    A(j:m,j:n) = (eye(m - j) - betav * (v * v') ) * A(j:m,j:n);
+    A(j:m,j:n) = (eye(m-j+1) - betav * (v * v') ) * A(j:m,j:n);
     if j < m
         A(j+1:m,j) = v(2:m - j + 1);
     end
@@ -15,7 +15,12 @@ end
 R = triu(A); % R is the upper triangular matrix of the "new" A
 
 % Computation of Q using backward accumulation
-I = eye(m);
-Q = I(:, 1:k);
+k = min(m,n);
+Q = eye(m,m);
+for j = k : -1 : 1
+    v = [1; A(j+1:m,j)];
+    betav = 2/(1 + norm(A(j+1:m,j), 2)^2);
+    Q(j:m,j:m) = Q(j:m,j:m) - (betav * (v*v') * Q(j:m,j:m));
+end
 
 end
