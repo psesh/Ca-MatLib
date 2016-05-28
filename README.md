@@ -1,2 +1,2 @@
-# Macolib
-Matrix computations library
+# CaMatLib
+Cambridge Matrix Library
