@@ -6,4 +6,4 @@ Efficient codes for <br>
   - Singular value decomposition (SVD)
   
 <br>
-Objective is to make the codes as efficient as possible (never storing A!)
+Objective is to make the codes as efficient as possible (never storing A!). Coding in progress!
