@@ -1,42 +1,29 @@
-% Householder QR factorization with pivoting (Businger and Golub)
-% Copyright (c) 2016 by Pranay Seshadri
-function [piv, A] = qr_householderpivoting(A)
+function [permutation_vector, R] = qr_householderpivoting(A)
+R = A;
 [m,n] = size(A);
+colnorms = zeros(n,1);
+for i = 1 : n
+    colnorms(i) = R(:,i)' * R(:,i);
+end
+permutation_vector = 1 : 1 : n;
 
-% Computation of column norms
-c = zeros(n);
-for j = 1 : n
-    c(j) = A(1:m,j)' * A(1:m,j);
+for current_index = 1 : n
+    
+    [c2,p2] = swampcolumns(colnorms(current_index:n), permutation_vector(current_index:n) );
+    colnorms = [colnorms(1:current_index-1); c2];
+    permutation_vector = [permutation_vector(1: current_index-1), p2];
+    
+    % Now compute the householder vector of A(:,1)
+    [v,b] = house(R(current_index:m,current_index));
+    
+    % Apply the transformation to R from the left
+    R(current_index:m,current_index:n) = (eye(m-current_index+1) - b * (v * v')) * R(current_index:m,current_index:n);
+    
+    for i = current_index + 1 : n
+        colnorms(i) = colnorms(i) - R(current_index,i)^2;
+    end
+    
 end
 
-r = 0;
-tau = max(c);
-
-while( tau > 0 && r < n)
-   r = r + 1;
-   k = n;
-   % Find the smallest k with r<= k <= n so c(k) = tau
-   for i = r : n
-       if(c(i) - tau == 0 && i < k)
-           k = i;
-       end
-   end
-   piv(r) = k;
-   temp = A(1:m,r);
-   A(1:m,r) = A(1:m,k);
-   A(1:m,k) = temp;
-
-   temp = c(r);
-   c(r) = c(k);
-   c(k) = temp;
-   
-   [v,b] = house(A(r:m,r));
-   A(r:m,r:n) = (eye(m - r + 1) - b * (v * v')) * A(1:r:m, r:n);
-   A(r+1:m,r) = v(2:m - r + 1);
-   for i = r + 1:n
-       c(i) = c(i) - A(r,i).^2;
-   end
-   tau = max(c(r+1:n));
-end 
-  
 end
+
