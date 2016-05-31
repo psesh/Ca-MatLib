@@ -6,7 +6,7 @@
 %
 % Copyright (c) 2016 by Pranay Seshadri
 %
-function [R,Q] = qr_householderpivotingIII(A)
+function [Q,R] = qr_householderpivotingIII(A)
 [m,n] = size(A); % Size of "A" -- can set as input!
 column_norms = zeros(n,1); % Initialize column norms vector
 
@@ -15,20 +15,25 @@ column_norms = zeros(n,1); % Initialize column norms vector
 %---------------------------------------------------------------------
 % 1. Compute all the column norms -- this computation is expensive and
 % ideal only for the first iteration. [Change me later -- to Pythogras!]
-for j = k : n
-    column_norms(j,1) = norm(A(1:m,j), 2)^2;
+for j = 1 : n
+    column_norms(j,1) = norm(A(1:m, j),2)^2;
 end
 
-% 2. Find the "j*" column index with the highest column norm
-[~,j_star] = max(column_norms);
 
 for k = 1 : n
     
     %---------------------------------------------------------------------
     % Step 0:
     %---------------------------------------------------------------------
+    % 2. Find the "j*" column index with the highest column norm
+    for j = 1 : n
+        column_norms(j,1) = norm(A(1:m, j),2)^2;
+    end
+    
+    [~,j_star] = max(column_norms(k:n,1));
+    j_star = j_star + 
     % 3. If j* = k, skip to step 1, else swap columns
-    if( j_star ~= k)
+    if(k ~= j_star)
         
         % Swamp columns in A
         temp = A(1:m,k);
@@ -64,11 +69,18 @@ for k = 1 : n
     %---------------------------------------------------------------------
     % Step 3: Orthogonalization
     %---------------------------------------------------------------------
-    for j = k + 1 : n
-        R(k,j) = Q(1:m,k)' * A(1:m,j);
-        A(1:m,j) = A(1:m,j) - Q(1:m,k)*R(k,j);
-        A(
+    if(k ~= n)
+        for j = k + 1 : n
+            R(k,j) = Q(1:m,k)' * A(1:m,j);
+            A(1:m,j) = A(1:m,j) - R(k,j)* Q(1:m,k);
+            %column_norms(j,1) = column_norms(j,1)^2 - R(k,j)^2  ;
+        end
+    else
+        break;
     end
     
     
+end
+
+
 end
