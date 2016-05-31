@@ -1,4 +1,4 @@
-# CaMatLib
+# Ca-MatLib
 Cambridge Matrix Library
 
 Copyright (c) 2016 by Pranay Seshadri
