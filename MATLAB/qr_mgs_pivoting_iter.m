@@ -1,14 +1,15 @@
-% MODIFIED GRAM-SCHMIDT QR COLUMN PIVOTING ALGORITHM:
+% MODIFIED GRAM-SCHMIDT QR COLUMN PIVOTING ALGORITHM
+% (ITERATIVE VERSION!)
 % See:
 % 1. Gene Golub & Charles Van Loan, "Matrix Computations" (2003)
 % 2. Aciya Dax, "A modified Gram-schmidt algorithm with iterative
 % orthogonalization and column pivoting" (2000)
 %
+% Re-write for an iterative version!!!
 % Copyright (c) 2016 by Pranay Seshadri
-function [Q,R, pivots] = qr_householderpivotingIII(A)
+function [Q,R, pivots] = qr_mgs_pivoting_iter(A)
 [m,n] = size(A); % Size of "A" -- can set as input!
 column_norms = zeros(n,1); % Initialize column norms vector
-epsilon = zeros(n,1); % epsilon array
 pivots = 1 : n; % 
 %---------------------------------------------------------------------
 % Step 0:
@@ -17,11 +18,7 @@ pivots = 1 : n; %
 % ideal only for the first iteration. [Change me later -- to Pythogras!]
 for j = 1 : n
     column_norms(j,1) = norm(A(1:m, j),2)^2;
-    epsilon(j,1) = eps * column_norms(j,1);
 end
-
-% Used for pythogras updating!
-tau = min(eps^(1/4), 0.001);
 
 % Now loop!
 for k = 1 : n
@@ -57,13 +54,19 @@ for k = 1 : n
     end
     
     %---------------------------------------------------------------------
-    % Step 1: Reorthogonalization
+    % Step 1: Iterative Reorthogonalization
     %---------------------------------------------------------------------
     if( k~=1 )
+        
+        % 1. Generate a sequence of vectors u_l
+        u_0 = 
         for i = 1 : k - 1
-            alpha(i) = Q(1:m,i)' * A(1:m,k);
-            R(i,k) = R(i,k) + alpha(i);
-            A(1:m,k) = A(1:m,k) - alpha(i)*Q(1:m,i);
+
+            
+            
+            alpha = Q(1:m,i)' * A(1:m,k);
+            R(i,k) = R(i,k) + alpha;
+            A(1:m,k) = A(1:m,k) - alpha*Q(1:m,i);
         end
     end
     
@@ -79,21 +82,8 @@ for k = 1 : n
     if(k ~= n)
         for j = k + 1 : n
             R(k,j) = Q(1:m,k)' * A(1:m,j);
-            A(1:m,j) = A(1:m,j) - R(k,j)* Q(1:m,k);
-            column_norms(j,1) = column_norms(j,1) - R(k,j)^2  ;
-            actual = norm(A(1:m, j),2)^2;
-            V = [column_norms(k,
-            
-            % To address difficulty in "Pythogras' updating"
-            disp('got here----');
-            if(column_norms(j,1) < epsilon(j) / tau)
-                disp('here')
-                column_norms(j,1) = sum(A(1:m,j).^2);
-                epsilon(j,1) = eps * column_norms(j,1);
-            end
-            
-            % ---- Seems to be pretty similar to MATLAB -------    
-            %column_norms(j,1) = norm(A(1:m, j),2)^2;
+            A(1:m,j) = A(1:m,j) - R(k,j)* Q(1:m,k); 
+            column_norms(j,1) = norm(A(1:m, j),2)^2;
         end
     end
     
