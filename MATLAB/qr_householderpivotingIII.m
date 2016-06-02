@@ -8,6 +8,7 @@
 function [Q,R, pivots] = qr_householderpivotingIII(A)
 [m,n] = size(A); % Size of "A" -- can set as input!
 column_norms = zeros(n,1); % Initialize column norms vector
+epsilon = zeros(n,1); % epsilon array
 pivots = 1 : n; % 
 %---------------------------------------------------------------------
 % Step 0:
@@ -16,7 +17,11 @@ pivots = 1 : n; %
 % ideal only for the first iteration. [Change me later -- to Pythogras!]
 for j = 1 : n
     column_norms(j,1) = norm(A(1:m, j),2)^2;
+    epsilon(j,1) = eps * column_norms(j,1);
 end
+
+% Used for pythogras updating!
+tau = min(eps^(1/4), 0.001);
 
 % Now loop!
 for k = 1 : n
@@ -75,15 +80,21 @@ for k = 1 : n
         for j = k + 1 : n
             R(k,j) = Q(1:m,k)' * A(1:m,j);
             A(1:m,j) = A(1:m,j) - R(k,j)* Q(1:m,k);
+            %column_norms(j,1) = column_norms(j,1) - R(k,j)^2  ;
+            %actual = norm(A(1:m, j),2)^2;
+            %V = [column_norms(j,1), actual];
+            %disp(V)
             
-            column_norms(j,1) = column_norms(j,1)^2 - R(k,j)^2  ;
+%             % To address difficulty in "Pythogras' updating"
+%             %disp('got here----');
+%             if(column_norms(j,1) < epsilon(j) / tau)
+%                 disp('here')
+%                 column_norms(j,1) = sum(A(1:m,j).^2);
+%                 epsilon(j,1) = eps * column_norms(j,1);
+%             end
             
-            % To address difficulty in "Pythogras' updating"
-            %tau = min(eps^(1/4) , 0.01);
-            %epsilon_j = eps * 
-            %if(column_norms(j,1) < epsilon_j / tau)
-            % ---- Seems to be pretty similar to MATLAB -------
-            %column_norms(j,1) = norm(A(1:m, j),2)^2;
+            % ---- Seems to be pretty similar to MATLAB -------    
+            column_norms(j,1) = norm(A(1:m, j),2)^2;
         end
     end
     
