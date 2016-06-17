@@ -3,5 +3,6 @@ Lecture notes on all the techniques that can be used to solve Ax=b using ipython
   - Least squares (QR, SVD, LU, Normal equations)
   - Compressed sensing (l1 norm minimization)
   - Memory saving recipes
+  - Krylov subspace techniques
 
 Copyright (c) 2016 by Pranay Seshadri
